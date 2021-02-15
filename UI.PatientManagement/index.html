@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <title>Patient Management</title>
+  </head>
+  <body>
+    <div class="container">
+        <form class="row g-3 needs-validation" novalidate>
+            <div class="col-md-4">
+                <label for="patienFirstName" class="form-label">Patient first name</label>
+                <input type="text" class="form-control" id="patienFirstName" required>
+            </div>
+            <div class="col-md-4">
+                <label for="patientMiddleName" class="form-label">Patient middle name</label>
+                <input type="text" class="form-control" id="patientMiddleName">
+            </div>
+            <div class="col-md-4">
+                <label for="patientLastName" class="form-label">Patient last name</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="patientLastName" aria-describedby="inputGroupPrepend">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Gender</label>
+                <div class="form-check form-check-inline">
+                    <input type="radio" class="form-check-input" id="genderMale" name="gender" value="Male" required>
+                    <label class="form-check-label" for="genderMale">Male</label>
+                    
+                </div>
+                <div class="form-check mb-3 form-check-inline">
+                    <input type="radio" class="form-check-input" id="genderFemale" value="Female" name="gender" required>
+                    <label class="form-check-label" for="genderFemale">Female</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="DOB" class="form-label">DOB</label>
+                <div class="input-group date has-validation" data-provide="datepicker">
+                    <input type="text" class="form-control" id="DOB" data-date-end-date="0d" required>
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-th"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="age" class="form-label">Age</label>
+                <div class="input-group">
+                <input type="number" class="form-control" id="age" aria-describedby="inputGroupPrepend">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="caseType" class="form-label">Case Type</label>
+                <select class="form-select" id="caseType" required>
+                    <option selected disabled value="">Choose case type</option>
+                    <option>Normal</option>
+                    <option>MLC</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="policeEnquireRemark" class="form-label">Police Enquire Remark</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="policeEnquireRemark" aria-describedby="inputGroupPrepend">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="presentAddress" class="form-label">Present Address</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="presentAddress" aria-describedby="inputGroupPrepend">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="permanentAddress" class="form-label">Permanent Address</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="permanentAddress" aria-describedby="inputGroupPrepend">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <label for="photo" class="form-label">Please select photo</label>
+                <input class="form-control" type="file" id="photo" accept="image/*">
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" type="button" onclick="SaveData()">Submit form</button>
+            </div>
+        </form>
+    </div>
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="dist/js/bootstrap.bundle.min.js" ></script>
+    <script src="dist/js/jquery.min.js" ></script>
+    <script src="dist/js/bootstrap-datepicker.min.js" ></script>
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js" integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG" crossorigin="anonymous"></script>
+    -->
+    <script>
+        var fileData = null;
+        var typeofFile = null;
+        $('.date').datepicker({
+            format: 'dd/mm/yyyy',
+            endDate: '0d'
+        });
+        $('.date').datepicker().on("changeDate", function(e) {
+            var date = new Date("01/01/1870");
+            if(e.date<date){
+                alert("DOB should be between 01/01/1870 to today");
+                document.getElementById("age").value=null;
+                document.getElementById("dob").value=null;
+            }
+            else
+                document.getElementById("age").value=calculateAge(e.date);
+        });
+        function calculateAge(birthday) { // birthday is a date
+            var ageDifMs = Date.now() - birthday.getTime();
+            var ageDate = new Date(ageDifMs); // miliseconds from epoch
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+
+        var reader;
+
+    function handleFileSelect(evt)
+    {
+        typeofFile = null;
+        fileData = null;
+        evt.target.files;
+
+        if (evt.target.files.length == 1)
+        {
+            var reader = new FileReader();
+
+            reader.onload = function (e)
+            {
+                fileData = reader.result.split(',')[1];
+                typeofFile = reader.result.split(';')[0].split('/')[1];
+            }
+            reader.readAsDataURL(evt.target.files[0]);
+        }
+    }
+
+    document.getElementById('photo').addEventListener('change', handleFileSelect, false);
+
+    function SaveData(){
+        var caseType = document.getElementById('caseType').value;
+        var firstName = document.getElementById('patienFirstName').value;
+        var middleName = document.getElementById('patientMiddleName').value;
+        var lastName = document.getElementById('patientLastName').value;
+        var gender = document.getElementsByName('gender');
+        var gender_value;
+        for(var i = 0; i < gender.length; i++){
+            if(gender[i].checked){
+                gender_value = gender[i].value;
+            }
+        }
+        var dOB = $("#DOB").datepicker("getDate");
+        var age = document.getElementById('age').value;
+        var presentAddress = document.getElementById('presentAddress').value;
+        var permanentAddress = document.getElementById('permanentAddress').value;
+        var policeEnquireRemark = document.getElementById('policeEnquireRemark').value;
+        if(firstName==null || firstName=="")
+        {
+            alert("Please enter the First name");
+            return;
+        }
+        if(gender_value==null || gender_value == "")
+        {
+            alert("Please select the gender");
+            return;
+        }
+        if(caseType==null || caseType=="")
+        {
+            alert("Please select the case type");
+            return;
+        }
+        if(caseType=="MLC" && (policeEnquireRemark==null || policeEnquireRemark=="") ){
+            alert("Please enter the Police Enquire Remark");
+            return;
+        }
+        
+        $.ajax({
+            url: "https://localhost:44370/api/patient",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                "FirstName": firstName,
+                "MiddleName": middleName,
+                "LastName":lastName,
+                "Gender":gender_value,
+                "DOB":dOB,
+                "Age":Number(age),
+                "CaseType":caseType,
+                "PoliceEnquireRemark":policeEnquireRemark,
+                "PresentAddress":presentAddress,
+                "PremanentAddress":permanentAddress,
+                "Photo":fileData,
+                "PhotoType":typeofFile
+            }),
+            success: function (data) {
+                alert(data.message);
+            },
+            error: function (error) {
+                alert(error.responseText);
+            }
+        });
+
+    }
+    </script>
+  </body>
+</html>
